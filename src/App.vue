@@ -10,5 +10,6 @@
 .app-container {
   width: 100vw;
   height: 100vh;
+  user-select: none;
 }
 </style>

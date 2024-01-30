@@ -11,3 +11,11 @@
 .no-shrink {
   flex-shrink: 0;
 }
+
+.click-active {
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+    user-select: none;
+  }
+}
