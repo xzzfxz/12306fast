@@ -94,7 +94,6 @@ const state = reactive({
     cardNo: '',
     code: ''
   },
-  passwordType: 'password',
   countTime: null as any,
   countNum: 59
 });
@@ -153,7 +152,6 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .form-container {
-  border: 1px solid red;
   padding-top: 40px;
   .title {
     padding-bottom: 20px;
