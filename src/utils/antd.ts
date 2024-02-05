@@ -7,7 +7,8 @@ import {
   Checkbox,
   Select,
   DatePicker,
-  ConfigProvider
+  ConfigProvider,
+  Table
 } from 'ant-design-vue';
 
 export const useAntD = {
@@ -20,6 +21,7 @@ export const useAntD = {
       .use(Input)
       .use(Select)
       .use(DatePicker)
+      .use(Table)
       .use(ConfigProvider);
   }
 };

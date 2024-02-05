@@ -105,8 +105,8 @@ const seatTypeList = ref<FilterItem[]>([
 .filter-container {
   margin: $paddingWidth;
   padding: 5px;
-  border: 1px solid $primaryColor;
-  border-radius: 4px;
+  border: 1px solid $borderColor;
+  border-radius: $radiusWidth;
   font-size: 12px;
 }
 .filter-item-container {
