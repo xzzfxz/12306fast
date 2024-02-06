@@ -3,18 +3,11 @@
     <div class="search-item flex">
       <div class="filter-label">出发地：</div>
       <div class="input-container">
-        <a-select
+        <StationSelect
           v-model:value="startPlace"
-          show-search
-          placeholder="出发地"
-          style="width: 140px"
-          size="small"
-          :show-arrow="false"
-          :filter-option="false"
-          :not-found-content="null"
           :options="startPlaceList"
-          @search="handlePlaceSearch($event, true)"
-        ></a-select>
+          :filterOption="filterStation"
+        />
       </div>
     </div>
     <div class="search-item flex">
@@ -28,14 +21,15 @@
         <a-select
           v-model:value="endPlace"
           show-search
+          allowClear
           placeholder="出发地"
           style="width: 140px"
           size="small"
+          :fieldNames="{ label: 'name', value: 'id' }"
           :show-arrow="false"
           :filter-option="false"
           :not-found-content="null"
           :options="endPlaceList"
-          @search="handlePlaceSearch($event, false)"
         ></a-select>
       </div>
     </div>
@@ -63,18 +57,36 @@
 import { ref } from 'vue';
 import { SwapOutlined } from '@ant-design/icons-vue';
 import dayjs from 'dayjs';
+import { EventName } from '@/const/eventName';
+import { invoke } from '@tauri-apps/api';
+import { Station } from '@/interface';
+import StationSelect from '@/components/StationSelect/index.vue';
+
+const commonStationList = ref<Station[]>([]);
+// const allStationList = ref<Station[]>([]);
 
 const startPlace = ref('');
-const startPlaceList = ref([]);
+const startPlaceList = ref<Station[]>([]);
 
 const endPlace = ref('');
-const endPlaceList = ref([]);
+const endPlaceList = ref<Station[]>([]);
 
 const date = ref(dayjs().format('YYYY-MM-DD'));
 
-// 搜索地点
-const handlePlaceSearch = (value: string, isStart: boolean = false) => {
-  console.log(value, isStart);
+// 过滤站点
+const filterStation = (value: string, current: Station) => {
+  if (!value) {
+    return true;
+  }
+  if (
+    current.name?.includes(value.toLowerCase()) ||
+    current.jianName?.includes(value.toLowerCase()) ||
+    current.jianPin?.includes(value.toLowerCase()) ||
+    current.quanPin?.includes(value.toLowerCase())
+  ) {
+    return true;
+  }
+  return false;
 };
 
 // 今日之前的日期禁用
@@ -86,6 +98,20 @@ const getDisabledDate = (current: Date) => {
   }
   return currentDate.isBefore(dayjs());
 };
+
+// 获取常用站点
+const getCommonStations = async () => {
+  const list: Station[] = await invoke(EventName.GET_COMMON_STATIONS);
+  commonStationList.value = list;
+  startPlaceList.value = list;
+  endPlaceList.value = list;
+};
+
+// 初始化事件
+const initData = () => {
+  getCommonStations();
+};
+initData();
 </script>
 
 <style lang="scss" scoped></style>
