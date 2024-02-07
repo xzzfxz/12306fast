@@ -4,12 +4,13 @@
       v-model:value="model"
       show-search
       allowClear
+      :dropdownMatchSelectWidth="false"
       :placeholder="props.placeholder"
       :style="{ width: props.width + 'px' }"
       size="small"
       :fieldNames="{ label: props.labelName, value: props.valueName }"
       :show-arrow="false"
-      :filterOption="filterStation"
+      :filterOption="false"
       :not-found-content="null"
       :options="props.options"
       @search="handlePlaceSearch"
@@ -23,8 +24,8 @@
             :key="item[props.valueName]"
             @mousedown="handleSelect(item)"
           >
-            <div class="left flex">{{ item[props.labelName] }}</div>
-            <div class="right flex">{{ item[props.valueName] }}</div>
+            <div class="left flex no-shrink">{{ item[props.labelName] }}</div>
+            <div class="right flex no-shrink">{{ item['quanPin'] || item['jianPin'] }}</div>
           </div>
         </div>
       </template>
@@ -61,32 +62,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: '出发地'
-  },
-  filterOption: {
-    type: Function as PropType<(input: string, option: any) => boolean>
   }
 });
 
 const model = ref<unknown>(undefined);
-
-// 过滤站点
-const filterStation = (value: string, current: any) => {
-  if (!value) {
-    return true;
-  }
-  if (current.name?.includes(value.toLowerCase())) {
-    return true;
-  }
-  // if (
-  //   current.name?.includes(value.toLowerCase()) ||
-  //   current.jianName?.includes(value.toLowerCase()) ||
-  //   current.jianPin?.includes(value.toLowerCase()) ||
-  //   current.quanPin?.includes(value.toLowerCase())
-  // ) {
-  //   return false;
-  // }
-  return false;
-};
 
 // 搜索地点
 const handlePlaceSearch = (value: string) => {
@@ -128,11 +107,14 @@ watch(
     background-color: #e9f4fe;
     font-weight: bold;
   }
+  .right {
+    margin-left: 10px;
+  }
 }
 </style>
 <style lang="scss">
 .select-dropdown-container {
-  height: 200px;
+  max-height: 200px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 4px;

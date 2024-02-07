@@ -18,27 +18,37 @@ async fn format_station_list(all_str: &str, is_common: bool) -> Result<Vec<Stati
     let mut station_list: Vec<Station> = vec![];
     for info in station_str_arr {
         let info_arr: Vec<&str> = info.split("|").collect();
-        if is_common {
-            let jian_pin = info_arr[0].trim().to_string();
-            let name = info_arr[1].trim().to_string();
-            let id = info_arr[2].trim().to_string();
-            let station = Station {
-                jian_pin,
-                name,
-                id,
-                area_code: None,
-                quan_pin: None,
-                jian_name: None,
-            };
-            station_list.push(station);
+        let jian_pin = info_arr[0].trim().to_string();
+        let name = info_arr[1].trim().to_string();
+        let id = info_arr[2].trim().to_string();
+        let mut quan_pin: Option<String> = None;
+        let mut area_code: Option<String> = None;
+        if !is_common {
+            quan_pin = Some(info_arr[3].trim().to_string());
+            area_code = Some(info_arr[5].trim().to_string());
         }
+        let station = Station {
+            jian_pin,
+            name,
+            id,
+            area_code,
+            quan_pin,
+        };
+        station_list.push(station);
     }
     Ok(station_list)
 }
 
-// 获取常用站点
+/// 获取常用站点
 pub async fn get_common_stations() -> Result<Vec<Station>> {
     let name_str = network::fetch_favorite_names().await?;
     let list = format_station_list(&name_str, true).await?;
+    Ok(list)
+}
+
+/// 获取所有站点
+pub async fn get_all_station() -> Result<Vec<Station>> {
+    let name_str = network::fetch_all_names().await?;
+    let list = format_station_list(&name_str, false).await?;
     Ok(list)
 }

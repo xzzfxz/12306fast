@@ -6,7 +6,7 @@
         <StationSelect
           v-model:value="startPlace"
           :options="startPlaceList"
-          :filterOption="filterStation"
+          @search="handleSearchStation($event, 'start')"
         />
       </div>
     </div>
@@ -18,19 +18,11 @@
     <div class="search-item flex">
       <div class="filter-label">目的地：</div>
       <div class="input-container">
-        <a-select
+        <StationSelect
           v-model:value="endPlace"
-          show-search
-          allowClear
-          placeholder="出发地"
-          style="width: 140px"
-          size="small"
-          :fieldNames="{ label: 'name', value: 'id' }"
-          :show-arrow="false"
-          :filter-option="false"
-          :not-found-content="null"
           :options="endPlaceList"
-        ></a-select>
+          @search="handleSearchStation($event, 'end')"
+        />
       </div>
     </div>
     <div class="search-item flex">
@@ -63,7 +55,7 @@ import { Station } from '@/interface';
 import StationSelect from '@/components/StationSelect/index.vue';
 
 const commonStationList = ref<Station[]>([]);
-// const allStationList = ref<Station[]>([]);
+const allStationList = ref<Station[]>([]);
 
 const startPlace = ref('');
 const startPlaceList = ref<Station[]>([]);
@@ -74,19 +66,33 @@ const endPlaceList = ref<Station[]>([]);
 const date = ref(dayjs().format('YYYY-MM-DD'));
 
 // 过滤站点
-const filterStation = (value: string, current: Station) => {
+const handleSearchStation = (value: string, type: string) => {
   if (!value) {
-    return true;
+    if (type === 'start') {
+      startPlaceList.value = commonStationList.value;
+    } else {
+      endPlaceList.value = commonStationList.value;
+    }
+    return;
   }
-  if (
-    current.name?.includes(value.toLowerCase()) ||
-    current.jianName?.includes(value.toLowerCase()) ||
-    current.jianPin?.includes(value.toLowerCase()) ||
-    current.quanPin?.includes(value.toLowerCase())
-  ) {
-    return true;
+  const list = allStationList.value.filter((current: Station) => {
+    if (current.name === '安亭北') {
+      console.log(current, value);
+    }
+    if (
+      current.name?.includes(value.toLowerCase()) ||
+      current.jianPin?.includes(value.toLowerCase()) ||
+      current.quanPin?.includes(value.toLowerCase())
+    ) {
+      return true;
+    }
+    return false;
+  });
+  if (type === 'start') {
+    startPlaceList.value = list;
+  } else {
+    endPlaceList.value = list;
   }
-  return false;
 };
 
 // 今日之前的日期禁用
@@ -107,9 +113,16 @@ const getCommonStations = async () => {
   endPlaceList.value = list;
 };
 
+// 获取所有站点
+const getAllStations = async () => {
+  const list: Station[] = await invoke(EventName.GET_All_STATIONS);
+  allStationList.value = list;
+};
+
 // 初始化事件
 const initData = () => {
   getCommonStations();
+  getAllStations();
 };
 initData();
 </script>

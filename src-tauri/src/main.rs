@@ -7,7 +7,10 @@ mod service;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![controller::get_common_station])
+        .invoke_handler(tauri::generate_handler![
+            controller::get_common_station,
+            controller::get_all_station
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -7,9 +7,7 @@ pub struct Station {
     pub name: String,
     pub id: String,
     #[serde(rename = "areaCode")]
-    pub area_code: Option<u32>,
+    pub area_code: Option<String>,
     #[serde(rename = "quanPin")]
     pub quan_pin: Option<String>,
-    #[serde(rename = "jianName")]
-    pub jian_name: Option<String>,
 }
