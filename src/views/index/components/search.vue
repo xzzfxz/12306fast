@@ -39,7 +39,7 @@
     </div>
     <div class="search-item flex">
       <div class="input-container">
-        <a-button type="primary" size="small">查询</a-button>
+        <a-button type="primary" size="small" @click="handleSearch">查询</a-button>
       </div>
     </div>
   </div>
@@ -53,6 +53,7 @@ import { EventName } from '@/const/eventName';
 import { invoke } from '@tauri-apps/api';
 import { Station } from '@/interface';
 import StationSelect from '@/components/StationSelect/index.vue';
+import { message } from 'ant-design-vue';
 
 const commonStationList = ref<Station[]>([]);
 const allStationList = ref<Station[]>([]);
@@ -93,6 +94,21 @@ const handleSearchStation = (value: string, type: string) => {
   } else {
     endPlaceList.value = list;
   }
+};
+
+// 查询
+const handleSearch = async () => {
+  if (!startPlace.value || !endPlace.value) {
+    message.error('请先选择出发地与目的地');
+    return;
+  }
+  const params = {
+    date: date.value,
+    fromStation: startPlace.value,
+    endStation: endPlace.value
+  };
+  const res: any = await invoke(EventName.GET_LEFT_TICKET, params);
+  console.log(res);
 };
 
 // 今日之前的日期禁用

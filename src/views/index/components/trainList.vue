@@ -41,7 +41,7 @@
           </template>
         </template>
         <template #bodyCell="{ column, text, record }">
-          <template v-if="column.dataIndex === 'trainNumber'">
+          <template v-if="column.dataIndex === 'trainName'">
             <div class="column-container flex-center">
               <div class="top-line line flex-center">
                 <a class="train">{{ text }}</a>
@@ -111,7 +111,7 @@ const columnList = ref(COLUMN_LIST);
 
 const tableData = ref([
   {
-    trainNumber: 'G1234',
+    trainName: 'G1234',
     departureStation: '北京南 - 上海虹桥',
     departureTime: '08:00 - 15:30',
     duration: '7小时30分',

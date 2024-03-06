@@ -1,7 +1,7 @@
 export const COLUMN_LIST = [
   {
     title: '车次',
-    dataIndex: 'trainNumber',
+    dataIndex: 'trainName',
     align: 'center'
   },
   {
@@ -11,7 +11,7 @@ export const COLUMN_LIST = [
   },
   {
     title: '出发时间/到达时间',
-    dataIndex: 'departureTime',
+    dataIndex: 'startTime',
     align: 'center'
   },
   {
